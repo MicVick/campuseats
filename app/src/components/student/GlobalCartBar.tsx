@@ -24,7 +24,7 @@ export function GlobalCartBar() {
   const total = cartItemTotal(lines);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-[4.25rem] z-30 px-4">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[4.25rem] z-30 px-4 md:hidden">
       <Link
         href="/cart"
         className="animate-slide-up pointer-events-auto mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl bg-accent-500 px-4 py-3 text-white shadow-lg shadow-accent-500/30"

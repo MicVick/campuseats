@@ -126,7 +126,7 @@ export default function SearchPage() {
                 <h2 className="mb-3 text-sm font-bold text-ink-soft">
                   Vendors ({data.vendors.length})
                 </h2>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {data.vendors.map((v) => (
                     <VendorCard key={v.id} vendor={v} />
                   ))}
@@ -139,17 +139,17 @@ export default function SearchPage() {
                 <h2 className="mb-3 text-sm font-bold text-ink-soft">
                   Dishes ({data.dishes.length})
                 </h2>
-                <div className="overflow-hidden rounded-card bg-surface shadow-sm">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {data.dishes.map((d) => (
                     <Link
                       key={d.id}
                       href={`/vendors/${d.vendorId}?item=${d.id}`}
-                      className="flex items-start gap-3 border-b border-line px-4 py-3 last:border-0 active:bg-surface-muted"
+                      className="flex items-start gap-3 rounded-card border border-line bg-surface p-4 shadow-sm transition-shadow hover:shadow active:scale-[0.99]"
                     >
                       <VegDot isVeg={d.isVeg} className="mt-1" />
                       <div className="min-w-0 flex-1">
                         <p className="font-semibold text-ink">{d.name}</p>
-                        <p className="line-clamp-1 text-xs text-ink-faint">
+                        <p className="line-clamp-2 mt-0.5 text-xs text-ink-faint">
                           {d.vendorName}
                           {d.description ? ` · ${d.description}` : ""}
                         </p>

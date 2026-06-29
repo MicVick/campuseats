@@ -98,7 +98,7 @@ export default function VendorOrdersPage() {
       </div>
 
       {/* Orders list */}
-      <div className="mt-4 space-y-3">
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
         {isLoading && (
           <>
             {[1, 2, 3].map((i) => (

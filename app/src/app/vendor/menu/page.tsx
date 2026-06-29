@@ -216,7 +216,7 @@ export default function VendorMenuPage() {
             <p className="mt-2 text-sm text-ink-faint">No items in this category.</p>
           )}
 
-          <div className="mt-2 space-y-2">
+          <div className="mt-2 grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3">
             {cat.items.map((item) => (
               <div key={item.id} className="flex items-center gap-3 rounded-xl bg-surface p-3 shadow-sm">
                 <VegDot isVeg={item.isVeg} />

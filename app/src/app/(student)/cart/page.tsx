@@ -21,7 +21,7 @@ export default function CartPage() {
 
   if (lines.length === 0) {
     return (
-      <div>
+      <div className="mx-auto max-w-2xl">
         <header className="sticky top-0 z-20 flex items-center gap-3 bg-surface/95 px-4 pb-3 pt-4 backdrop-blur">
           <Link href="/" aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-muted text-ink">
             <ChevronLeftIcon className="h-5 w-5" />
@@ -50,8 +50,9 @@ export default function CartPage() {
 
   return (
     <div className="min-h-dvh">
-      {/* Header */}
-      <header className="sticky top-0 z-20 flex items-center gap-3 bg-surface/95 px-4 pb-3 pt-4 backdrop-blur">
+      <div className="mx-auto max-w-2xl">
+        {/* Header */}
+        <header className="sticky top-0 z-20 flex items-center gap-3 bg-surface/95 px-4 pb-3 pt-4 backdrop-blur">
         <Link href="/" aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-muted text-ink">
           <ChevronLeftIcon className="h-5 w-5" />
         </Link>
@@ -155,6 +156,7 @@ export default function CartPage() {
             Proceed to Checkout — {formatPrice(grandTotal)}
           </Button>
         </Link>
+        </div>
       </div>
     </div>
   );

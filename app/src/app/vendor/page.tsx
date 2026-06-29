@@ -37,7 +37,7 @@ export default function VendorDashboardPage() {
         <p className="mt-0.5 text-xs text-ink-soft">This week</p>
 
         {popular && popular.length > 0 ? (
-          <div className="mt-4 space-y-2">
+          <div className="mt-4 grid grid-cols-1 gap-2 lg:grid-cols-2 lg:gap-4">
             {popular.map((item, idx) => (
               <div
                 key={item.name}

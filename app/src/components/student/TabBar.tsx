@@ -36,7 +36,7 @@ export function TabBar() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 backdrop-blur pb-safe">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 backdrop-blur pb-safe md:hidden">
       <div className="mx-auto flex max-w-md items-stretch justify-around">
         {TABS.map(({ href, label, Icon, match }) => {
           const active = match(pathname);

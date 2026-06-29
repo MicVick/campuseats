@@ -56,8 +56,9 @@ function CheckoutInner() {
 
   return (
     <div className="min-h-dvh">
-      {/* Header */}
-      <header className="sticky top-0 z-20 flex items-center gap-3 bg-surface/95 px-4 pb-3 pt-4 backdrop-blur">
+      <div className="mx-auto max-w-2xl">
+        {/* Header */}
+        <header className="sticky top-0 z-20 flex items-center gap-3 bg-surface/95 px-4 pb-3 pt-4 backdrop-blur">
         <Link href="/cart" aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-muted text-ink">
           <ChevronLeftIcon className="h-5 w-5" />
         </Link>
@@ -133,17 +134,17 @@ function CheckoutInner() {
           </div>
         </div>
       </div>
-
-      {/* Place Order */}
-      <div className="sticky bottom-16 border-t border-line bg-surface px-4 py-3">
-        <Button
-          fullWidth
-          size="lg"
-          onClick={handlePlaceOrder}
-          disabled={placeOrder.isPending}
-        >
-          {placeOrder.isPending ? "Placing order…" : `Place Order — ${formatPrice(grandTotal)}`}
-        </Button>
+        {/* Place Order */}
+        <div className="sticky bottom-16 border-t border-line bg-surface px-4 py-3">
+          <Button
+            fullWidth
+            size="lg"
+            onClick={handlePlaceOrder}
+            disabled={placeOrder.isPending}
+          >
+            {placeOrder.isPending ? "Placing order…" : `Place Order — ${formatPrice(grandTotal)}`}
+          </Button>
+        </div>
       </div>
     </div>
   );

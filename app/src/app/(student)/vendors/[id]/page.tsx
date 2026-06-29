@@ -291,7 +291,7 @@ function VendorContent({
             className="scroll-mt-16 pt-5"
           >
             <h2 className="mb-1 text-base font-bold text-ink">{cat.name}</h2>
-            <div className="divide-y divide-line">
+            <div className="grid grid-cols-1 divide-y divide-line sm:grid-cols-2 sm:gap-4 sm:divide-y-0 lg:grid-cols-3 xl:grid-cols-4">
               {cat.items.map((item) => {
                 const simpleLine = cartLineForSimpleItem(item.id);
                 const qty = itemQtyInCart(item.id);
@@ -302,7 +302,7 @@ function VendorContent({
                   <div
                     key={item.id}
                     className={cn(
-                      "flex items-start justify-between gap-3 py-4",
+                      "flex items-start justify-between gap-3 py-4 sm:rounded-card sm:border sm:border-line sm:p-4",
                       !item.isAvailable && "opacity-60"
                     )}
                   >
