@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HomeIcon, SearchIcon, ReceiptIcon, UserIcon, CartIcon } from "@/components/icons";
-import { useCartStore } from "@/stores/cartStore";
+import { useCartStore, cartCount, cartItemTotal } from "@/stores/cartStore";
 import { cn, formatPrice } from "@/utils/format";
 
 const NAV_ITEMS = [
@@ -30,8 +30,10 @@ const NAV_ITEMS = [
 
 export function DesktopNav() {
   const pathname = usePathname();
-  const cartCount = useCartStore((s) => s.cartCount());
-  const cartTotal = useCartStore((s) => s.cartItemTotal());
+  const lines = useCartStore((s) => s.lines);
+  
+  const count = cartCount(lines);
+  const total = cartItemTotal(lines);
 
   return (
     <nav className="sticky top-0 z-50 hidden w-full border-b border-line bg-surface/95 backdrop-blur md:block">
@@ -61,7 +63,7 @@ export function DesktopNav() {
           })}
 
           {/* Cart Summary */}
-          {cartCount > 0 && (
+          {count > 0 && (
             <Link
               href="/cart"
               className="ml-4 flex items-center gap-2 rounded-full bg-brand-50 px-4 py-2 text-sm font-bold text-brand transition-colors hover:bg-brand-100"
@@ -69,10 +71,10 @@ export function DesktopNav() {
               <div className="relative">
                 <CartIcon className="h-5 w-5" />
                 <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-brand text-[9px] font-bold text-white">
-                  {cartCount}
+                  {count}
                 </span>
               </div>
-              {formatPrice(cartTotal)}
+              {formatPrice(total)}
             </Link>
           )}
         </div>
