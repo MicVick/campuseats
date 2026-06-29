@@ -1,0 +1,252 @@
+// CampusEats — Prisma Schema
+// Based on PRD v2 §9 Data Model
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  // url is now managed in prisma.config.ts (Prisma 7+)
+}
+
+// ─── Student User ───────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique // must be @iima.ac.in
+  authProvider String   @default("email") // "email" | "google"
+  createdAt    DateTime @default(now())
+
+  orders       Order[]
+  reviews      Review[]
+  feedbacks    FoodFeedback[]
+  favourites   Favourite[]
+}
+
+// ─── Vendor ─────────────────────────────────────────────────────
+
+model Vendor {
+  id                  String   @id @default(uuid())
+  name                String
+  description         String?
+  imageUrl            String?
+  cuisineTags         String   @default("[]") // JSON array stored as string (SQLite)
+  area                String   @default("")
+  hasVeg              Boolean  @default(true)
+  hasNonVeg           Boolean  @default(false)
+  avgRating           Float    @default(0)
+  ratingCount         Int      @default(0)
+  mvrcRating          Float?
+  mvrcReportUrl       String?
+  mvrcAssessmentDate  DateTime?
+  openHours           String   @default("{}") // JSON: { "mon": { "open": "08:00", "close": "22:00" }, ... }
+  pickupAvailable     Boolean  @default(true)
+  minOrder            Int      @default(0) // in paise (or smallest currency unit)
+  packagingFee        Int      @default(0)
+  avgPrepTimeMins     Int      @default(20)
+  upiId               String?
+  upiQrImageUrl       String?
+  isTemporarilyClosed Boolean  @default(false)
+  createdAt           DateTime @default(now())
+
+  accounts       VendorAccount[]
+  categories     MenuCategory[]
+  menuItems      MenuItem[]
+  orders         Order[]
+  reviews        Review[]
+  feedbacks      FoodFeedback[]
+  mvrcReports    MVRCReport[]
+  favourites     Favourite[]
+}
+
+// ─── Vendor Account (login credentials) ─────────────────────────
+
+model VendorAccount {
+  id           String   @id @default(uuid())
+  vendorId     String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+}
+
+// ─── Menu ───────────────────────────────────────────────────────
+
+model MenuCategory {
+  id        String @id @default(uuid())
+  vendorId  String
+  name      String
+  sortOrder Int    @default(0)
+
+  vendor Vendor     @relation(fields: [vendorId], references: [id])
+  items  MenuItem[]
+}
+
+model MenuItem {
+  id          String  @id @default(uuid())
+  vendorId    String
+  categoryId  String
+  name        String
+  description String?
+  price       Int // in paise
+  imageUrl    String?
+  isVeg       Boolean @default(true)
+  isAvailable Boolean @default(true)
+
+  vendor              Vendor               @relation(fields: [vendorId], references: [id])
+  category            MenuCategory         @relation(fields: [categoryId], references: [id])
+  customizationGroups CustomizationGroup[]
+}
+
+model CustomizationGroup {
+  id         String  @id @default(uuid())
+  menuItemId String
+  name       String
+  type       String  @default("single") // "single" | "multi"
+  required   Boolean @default(false)
+  minSelect  Int     @default(0)
+  maxSelect  Int     @default(1)
+
+  menuItem MenuItem              @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  options  CustomizationOption[]
+}
+
+model CustomizationOption {
+  id         String @id @default(uuid())
+  groupId    String
+  name       String
+  priceDelta Int    @default(0) // in paise
+
+  group CustomizationGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+}
+
+// ─── Orders ─────────────────────────────────────────────────────
+
+model Order {
+  id                  String   @id @default(uuid())
+  userId              String
+  vendorId            String
+  status              String   @default("placed") // placed|accepted|preparing|ready_for_pickup|completed|cancelled|rejected
+  rejectionReason     String?
+  itemTotal           Int // in paise
+  packagingFee        Int      @default(0)
+  grandTotal          Int
+  paymentMethod       String   @default("cod")
+  specialInstructions String?
+  estimatedPrepMins   Int?
+  placedAt            DateTime @default(now())
+  statusTimeline      String   @default("[]") // JSON array: [{ "status": "placed", "at": "ISO timestamp" }]
+
+  user      User        @relation(fields: [userId], references: [id])
+  vendor    Vendor      @relation(fields: [vendorId], references: [id])
+  items     OrderItem[]
+  review    Review?
+  feedback  FoodFeedback?
+}
+
+model OrderItem {
+  id              String @id @default(uuid())
+  orderId         String
+  menuItemId      String
+  nameSnapshot    String
+  qty             Int    @default(1)
+  unitPrice       Int // in paise
+  selectedOptions String @default("[]") // JSON: [{ "name": "Extra Cheese", "priceDelta": 3000 }]
+  itemNote        String?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+// ─── Reviews & Feedback ─────────────────────────────────────────
+
+model Review {
+  id        String   @id @default(uuid())
+  orderId   String   @unique
+  userId    String
+  vendorId  String
+  rating    Int // 1–5
+  text      String?
+  createdAt DateTime @default(now())
+
+  order  Order  @relation(fields: [orderId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+}
+
+model FoodFeedback {
+  id              String   @id @default(uuid())
+  orderId         String?  @unique // null for general (non-order) feedback
+  userId          String
+  vendorId        String
+  foodQuality     Int // 1–5
+  hygiene         Int // 1–5
+  valueForMoney   Int // 1–5
+  itemComments    String?
+  comments        String?
+  isFlaggedForMvrc Boolean @default(false)
+  createdAt       DateTime @default(now())
+
+  order  Order?  @relation(fields: [orderId], references: [id])
+  user   User    @relation(fields: [userId], references: [id])
+  vendor Vendor  @relation(fields: [vendorId], references: [id])
+}
+
+// ─── MVRC Reports ───────────────────────────────────────────────
+
+model MVRCReport {
+  id               String   @id @default(uuid())
+  vendorId         String
+  rating           Float
+  hygieneScore     Float
+  foodQualityScore Float
+  complianceNotes  String?
+  correctiveActions String?
+  reportUrl        String? // PDF link
+  assessmentDate   DateTime
+  createdBy        String   @default("MVRC Admin")
+
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+}
+
+// ─── Promo Codes (optional) ─────────────────────────────────────
+
+model PromoCode {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  type        String    @default("flat") // "flat" | "percent"
+  value       Int // flat: paise amount; percent: percentage (e.g. 10 = 10%)
+  minOrder    Int?
+  maxDiscount Int? // only for percent type
+  active      Boolean   @default(true)
+  expiresAt   DateTime?
+}
+
+// ─── Favourites ─────────────────────────────────────────────────
+
+model Favourite {
+  id       String @id @default(uuid())
+  userId   String
+  vendorId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+
+  @@unique([userId, vendorId])
+}
+
+// ─── OTP Store (for email OTP) ──────────────────────────────────
+
+model OtpStore {
+  id        String   @id @default(uuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, code])
+}

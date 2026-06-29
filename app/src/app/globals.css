@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens ──────────────────────────────────────────────
+   CampusEats design system — one warm accent, clean neutrals,
+   unmistakable veg/non-veg colors. Tailwind v4 CSS-based config.
+*/
+
+@theme {
+  /* Accent — warm coral/red, the single brand color */
+  --color-accent-50: #fff1ee;
+  --color-accent-100: #ffe0d9;
+  --color-accent-200: #ffc2b5;
+  --color-accent-300: #ff9a85;
+  --color-accent-400: #ff6f52;
+  --color-accent-500: #f7502f;
+  --color-accent-600: #e23c1c;
+  --color-accent-700: #bd2e14;
+  --color-accent-800: #9c2916;
+  --color-accent-900: #802718;
+
+  /* Veg / Non-veg (Indian convention) */
+  --color-veg: #1a8d3f;
+  --color-veg-soft: #e7f6ec;
+  --color-nonveg: #b3261e;
+  --color-nonveg-soft: #fbeae9;
+
+  /* Surfaces & neutrals */
+  --color-surface: #ffffff;
+  --color-surface-muted: #f6f6f7;
+  --color-ink: #1c1b1f;
+  --color-ink-soft: #5c5b61;
+  --color-ink-faint: #908f96;
+  --color-line: #ececee;
+
+  /* MVRC badge */
+  --color-mvrc: #1d4ed8;
+  --color-mvrc-soft: #e8eefc;
+
+  /* Status colors */
+  --color-success: #1a8d3f;
+  --color-warning: #c87b06;
+  --color-danger: #b3261e;
+
+  /* Radius scale */
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+
+  /* Font */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ─── Base ──────────────────────────────────────────────────────── */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-surface-muted);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Hide scrollbars on horizontal rails */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Safe-area padding for installed PWA on iOS */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+}
+
+/* ─── Animations ────────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes badge-bounce {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease both;
+}
+.animate-slide-up {
+  animation: slide-up 0.3s ease both;
+}
+.animate-sheet-up {
+  animation: sheet-up 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-toast-in {
+  animation: toast-in 0.25s ease both;
+}
+.animate-badge-bounce {
+  animation: badge-bounce 0.4s ease;
+}
+
+/* Skeleton shimmer base */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9e9ec;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.4s infinite;
+}
