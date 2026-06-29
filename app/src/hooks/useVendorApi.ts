@@ -220,6 +220,7 @@ export function useUpdateItem() {
       isVeg?: boolean;
       isAvailable?: boolean;
       categoryId?: string;
+      imageUrl?: string | null;
     }) =>
       apiFetch(`/vendor/items/${id}`, {
         method: "PATCH",

@@ -103,17 +103,10 @@ function ProfileInner() {
 
         <div className="mt-4 overflow-hidden rounded-card bg-surface shadow-sm">
           <Link
-            href="/favourites"
-            className="flex items-center justify-between border-b border-line px-4 py-3.5 active:bg-surface-muted"
-          >
-            <span className="font-medium text-ink">❤️ Favourites</span>
-            <span className="text-ink-faint">›</span>
-          </Link>
-          <Link
             href="/orders"
             className="flex items-center justify-between px-4 py-3.5 active:bg-surface-muted"
           >
-            <span className="font-medium text-ink">🧾 Orders</span>
+            <span className="font-medium text-ink">🧾 My Orders</span>
             <span className="text-ink-faint">›</span>
           </Link>
         </div>

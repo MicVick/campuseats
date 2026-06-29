@@ -16,10 +16,11 @@ import {
 import { useToast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { VegDot } from "@/components/ui/Badge";
-import { Badge } from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Sheet } from "@/components/ui/Sheet";
 import { ConfirmDialog } from "@/components/ui/Sheet";
+import { ImageUpload } from "@/components/ImageUpload";
+import { FoodImage } from "@/components/FoodImage";
 import { PlusIcon, EditIcon, TrashIcon } from "@/components/icons";
 import { formatPrice, cn } from "@/utils/format";
 
@@ -47,6 +48,7 @@ export default function VendorMenuPage() {
   const [itemDesc, setItemDesc] = useState("");
   const [itemPrice, setItemPrice] = useState("");
   const [itemIsVeg, setItemIsVeg] = useState(true);
+  const [itemImage, setItemImage] = useState<string | null>(null);
   const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
 
   const resetItemForm = () => {
@@ -55,6 +57,7 @@ export default function VendorMenuPage() {
     setItemDesc("");
     setItemPrice("");
     setItemIsVeg(true);
+    setItemImage(null);
     setItemCategoryId("");
     setShowItemForm(false);
   };
@@ -71,6 +74,7 @@ export default function VendorMenuPage() {
     setItemDesc(item.description || "");
     setItemPrice(String(item.price / 100));
     setItemIsVeg(item.isVeg);
+    setItemImage(item.imageUrl ?? null);
     setItemCategoryId(item.categoryId);
     setShowItemForm(true);
   };
@@ -124,6 +128,7 @@ export default function VendorMenuPage() {
           price: pricePaise,
           isVeg: itemIsVeg,
           categoryId: itemCategoryId,
+          imageUrl: itemImage,
         });
         toast.success("Item updated");
       } else {
@@ -133,6 +138,7 @@ export default function VendorMenuPage() {
           description: itemDesc.trim() || undefined,
           price: pricePaise,
           isVeg: itemIsVeg,
+          imageUrl: itemImage ?? undefined,
         });
         toast.success("Item added");
       }
@@ -218,12 +224,24 @@ export default function VendorMenuPage() {
 
           <div className="mt-2 grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3">
             {cat.items.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 rounded-xl bg-surface p-3 shadow-sm">
-                <VegDot isVeg={item.isVeg} />
+              <div key={item.id} className="flex items-center gap-3 rounded-xl bg-surface p-3 shadow-sm ring-1 ring-line/60">
+                <FoodImage
+                  src={item.imageUrl}
+                  alt={item.name}
+                  name={item.name}
+                  emoji={item.isVeg ? "🥗" : "🍗"}
+                  className={cn(
+                    "h-12 w-12 shrink-0 rounded-lg",
+                    !item.isAvailable && "opacity-50 grayscale"
+                  )}
+                />
                 <div className="min-w-0 flex-1">
-                  <p className={cn("text-sm font-semibold", !item.isAvailable && "line-through text-ink-faint")}>
-                    {item.name}
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <VegDot isVeg={item.isVeg} size={12} />
+                    <p className={cn("truncate text-sm font-semibold", !item.isAvailable && "text-ink-faint line-through")}>
+                      {item.name}
+                    </p>
+                  </div>
                   <p className="text-xs text-ink-soft">{formatPrice(item.price)}</p>
                 </div>
                 <button
@@ -311,6 +329,12 @@ export default function VendorMenuPage() {
         }
       >
         <div className="space-y-4">
+          <ImageUpload
+            label="Photo"
+            hint="A clear photo helps students decide. Optional."
+            value={itemImage}
+            onChange={setItemImage}
+          />
           <div>
             <label className="mb-1 block text-sm font-medium text-ink">Name</label>
             <input

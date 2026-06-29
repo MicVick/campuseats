@@ -6,17 +6,17 @@
 */
 
 @theme {
-  /* Accent — warm coral/red, the single brand color */
-  --color-accent-50: #fff1ee;
-  --color-accent-100: #ffe0d9;
-  --color-accent-200: #ffc2b5;
-  --color-accent-300: #ff9a85;
-  --color-accent-400: #ff6f52;
-  --color-accent-500: #f7502f;
-  --color-accent-600: #e23c1c;
-  --color-accent-700: #bd2e14;
-  --color-accent-800: #9c2916;
-  --color-accent-900: #802718;
+  /* Accent — IIMA blue, the single brand color */
+  --color-accent-50: #eef4fb;
+  --color-accent-100: #d6e4f5;
+  --color-accent-200: #aecbeb;
+  --color-accent-300: #7ba8db;
+  --color-accent-400: #4480c6;
+  --color-accent-500: #1d5cae;
+  --color-accent-600: #164a92;
+  --color-accent-700: #133c76;
+  --color-accent-800: #133462;
+  --color-accent-900: #112c52;
 
   /* Veg / Non-veg (Indian convention) */
   --color-veg: #1a8d3f;
@@ -26,15 +26,15 @@
 
   /* Surfaces & neutrals */
   --color-surface: #ffffff;
-  --color-surface-muted: #f6f6f7;
-  --color-ink: #1c1b1f;
-  --color-ink-soft: #5c5b61;
-  --color-ink-faint: #908f96;
-  --color-line: #ececee;
+  --color-surface-muted: #f4f6f9;
+  --color-ink: #15233b;
+  --color-ink-soft: #51607a;
+  --color-ink-faint: #8b97aa;
+  --color-line: #e6eaf0;
 
-  /* MVRC badge */
-  --color-mvrc: #1d4ed8;
-  --color-mvrc-soft: #e8eefc;
+  /* MVRC badge — teal, distinct from the blue accent */
+  --color-mvrc: #0f766e;
+  --color-mvrc-soft: #d6f0ed;
 
   /* Status colors */
   --color-success: #1a8d3f;

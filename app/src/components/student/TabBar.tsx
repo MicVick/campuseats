@@ -2,22 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  HomeIcon,
-  SearchIcon,
-  ReceiptIcon,
-  UserIcon,
-} from "@/components/icons";
+import { HomeIcon, ReceiptIcon, UserIcon } from "@/components/icons";
 import { cn } from "@/utils/format";
 
 const TABS = [
   { href: "/", label: "Home", Icon: HomeIcon, match: (p: string) => p === "/" },
-  {
-    href: "/search",
-    label: "Search",
-    Icon: SearchIcon,
-    match: (p: string) => p.startsWith("/search"),
-  },
   {
     href: "/orders",
     label: "Orders",
@@ -28,7 +17,7 @@ const TABS = [
     href: "/profile",
     label: "Profile",
     Icon: UserIcon,
-    match: (p: string) => p.startsWith("/profile") || p.startsWith("/favourites"),
+    match: (p: string) => p.startsWith("/profile"),
   },
 ];
 
@@ -45,10 +34,13 @@ export function TabBar() {
               key={href}
               href={href}
               className={cn(
-                "flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium transition-colors",
+                "relative flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium transition-colors",
                 active ? "text-accent-600" : "text-ink-faint"
               )}
             >
+              {active && (
+                <span className="absolute top-0 h-0.5 w-8 rounded-full bg-accent-500" />
+              )}
               <Icon className="h-6 w-6" filled={active} />
               {label}
             </Link>

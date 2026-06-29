@@ -2,18 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HomeIcon, SearchIcon, ReceiptIcon, UserIcon, CartIcon } from "@/components/icons";
+import { HomeIcon, ReceiptIcon, UserIcon, CartIcon } from "@/components/icons";
 import { useCartStore, cartCount, cartItemTotal } from "@/stores/cartStore";
 import { cn, formatPrice } from "@/utils/format";
 
 const NAV_ITEMS = [
   { href: "/", label: "Home", Icon: HomeIcon, match: (p: string) => p === "/" },
-  {
-    href: "/search",
-    label: "Search",
-    Icon: SearchIcon,
-    match: (p: string) => p.startsWith("/search"),
-  },
   {
     href: "/orders",
     label: "Orders",
@@ -24,27 +18,32 @@ const NAV_ITEMS = [
     href: "/profile",
     label: "Profile",
     Icon: UserIcon,
-    match: (p: string) => p.startsWith("/profile") || p.startsWith("/favourites"),
+    match: (p: string) => p.startsWith("/profile"),
   },
 ];
 
 export function DesktopNav() {
   const pathname = usePathname();
   const lines = useCartStore((s) => s.lines);
-  
+
   const count = cartCount(lines);
   const total = cartItemTotal(lines);
 
   return (
-    <nav className="sticky top-0 z-50 hidden w-full border-b border-line bg-surface/95 backdrop-blur md:block">
+    <nav className="sticky top-0 z-50 hidden w-full border-b border-line bg-surface/90 backdrop-blur md:block">
       <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between px-6">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-black tracking-tight text-brand">CampusEats</span>
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-base">
+            🍴
+          </span>
+          <span className="text-xl font-black tracking-tight text-accent-600">
+            CampusEats
+          </span>
         </Link>
 
         {/* Links */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-7">
           {NAV_ITEMS.map(({ href, label, Icon, match }) => {
             const active = match(pathname);
             return (
@@ -52,28 +51,28 @@ export function DesktopNav() {
                 key={href}
                 href={href}
                 className={cn(
-                  "flex items-center gap-2 text-sm font-semibold transition-colors hover:text-ink",
-                  active ? "text-brand" : "text-ink-soft"
+                  "flex items-center gap-2 text-sm font-semibold transition-colors hover:text-accent-600",
+                  active ? "text-accent-600" : "text-ink-soft"
                 )}
               >
-                <Icon className={cn("h-5 w-5", active ? "text-brand" : "text-ink-soft")} />
+                <Icon className="h-5 w-5" filled={active} />
                 {label}
               </Link>
             );
           })}
 
-          {/* Cart Summary */}
+          {/* Cart summary */}
           {count > 0 && (
             <Link
               href="/cart"
-              className="ml-4 flex items-center gap-2 rounded-full bg-brand-50 px-4 py-2 text-sm font-bold text-brand transition-colors hover:bg-brand-100"
+              className="ml-2 flex items-center gap-2 rounded-full bg-accent-50 px-4 py-2 text-sm font-bold text-accent-700 transition-colors hover:bg-accent-100"
             >
-              <div className="relative">
+              <span className="relative">
                 <CartIcon className="h-5 w-5" />
-                <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-brand text-[9px] font-bold text-white">
+                <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent-500 px-1 text-[9px] font-bold text-white">
                   {count}
                 </span>
-              </div>
+              </span>
               {formatPrice(total)}
             </Link>
           )}

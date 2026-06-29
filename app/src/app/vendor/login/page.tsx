@@ -38,8 +38,11 @@ export default function VendorLoginPage() {
       <div className="w-full max-w-sm">
         {/* Brand */}
         <div className="mb-8 text-center">
-          <p className="text-3xl font-black text-accent-600">CampusEats</p>
-          <p className="mt-1 text-sm text-ink-soft">Vendor Portal</p>
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-500 text-2xl shadow-lg shadow-accent-500/30">
+            🍴
+          </div>
+          <p className="text-2xl font-black text-accent-600">CampusEats</p>
+          <p className="mt-1 text-sm font-semibold text-ink-soft">Vendor Portal</p>
         </div>
 
         {/* Login form */}

@@ -1,47 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useAuthStore } from "@/stores/authStore";
-import {
-  useFavouriteIds,
-  useToggleFavourite,
-} from "@/hooks/useFavourites";
 import { FoodImage } from "@/components/FoodImage";
 import { RatingBadge, MvrcBadge, OpenBadge, VegDot } from "@/components/ui/Badge";
-import { useToast } from "@/components/Toast";
 import { cn } from "@/utils/format";
 import type { VendorCardLike } from "@/types";
 
 export function VendorCard({ vendor }: { vendor: VendorCardLike }) {
-  const token = useAuthStore((s) => s.token);
-  const favIds = useFavouriteIds();
-  const toggleFav = useToggleFavourite();
-  const toast = useToast();
-  const isFav = favIds.has(vendor.id);
   const closed = vendor.isOpen === false;
-
-  const onFav = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!token) {
-      toast.info("Log in to save favourites");
-      return;
-    }
-    toggleFav.mutate(
-      { vendorId: vendor.id, isFav },
-      {
-        onError: (err: unknown) =>
-          toast.error(err instanceof Error ? err.message : "Couldn't update"),
-      }
-    );
-  };
 
   return (
     <Link
       href={`/vendors/${vendor.id}`}
       className={cn(
-        "group block overflow-hidden rounded-card bg-surface shadow-sm transition-shadow hover:shadow-md",
-        closed && "opacity-70"
+        "group block overflow-hidden rounded-card bg-surface shadow-sm ring-1 ring-line/60 transition-all hover:-translate-y-0.5 hover:shadow-md",
+        closed && "opacity-75"
       )}
     >
       <div className="relative">
@@ -49,22 +22,19 @@ export function VendorCard({ vendor }: { vendor: VendorCardLike }) {
           src={vendor.imageUrl}
           alt={vendor.name}
           name={vendor.name}
-          className="h-36 w-full"
+          className="h-36 w-full transition-transform duration-300 group-hover:scale-[1.03]"
           emoji="🍴"
         />
-        <button
-          onClick={onFav}
-          aria-label={isFav ? "Remove from favourites" : "Add to favourites"}
-          aria-pressed={isFav}
-          className="absolute right-2.5 top-2.5 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-lg shadow-sm backdrop-blur transition-transform active:scale-90"
-        >
-          <span className={isFav ? "text-accent-500" : "text-ink-faint"}>
-            {isFav ? "♥" : "♡"}
-          </span>
-        </button>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
         {vendor.isOpen !== undefined && (
           <div className="absolute bottom-2.5 left-2.5">
             <OpenBadge isOpen={!!vendor.isOpen} nextOpenTime={vendor.nextOpenTime} />
+          </div>
+        )}
+        {(vendor.hasVeg || vendor.hasNonVeg) && (
+          <div className="absolute right-2.5 top-2.5 flex items-center gap-1 rounded-pill bg-white/90 px-1.5 py-1 shadow-sm backdrop-blur">
+            {vendor.hasVeg && <VegDot isVeg size={12} />}
+            {vendor.hasNonVeg && <VegDot isVeg={false} size={12} />}
           </div>
         )}
       </div>
@@ -81,20 +51,14 @@ export function VendorCard({ vendor }: { vendor: VendorCardLike }) {
           {vendor.cuisineTags.join(" · ")}
         </p>
 
-        <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1">
           <MvrcBadge rating={vendor.mvrcRating} />
-          <span className="text-xs text-ink-faint">
-            {vendor.avgPrepTimeMins} min
+          <span className="inline-flex items-center gap-1 text-xs text-ink-faint">
+            ⏱ {vendor.avgPrepTimeMins} min
           </span>
-          {(vendor.hasVeg || vendor.hasNonVeg) && (
-            <span className="flex items-center gap-1">
-              {vendor.hasVeg && <VegDot isVeg size={12} />}
-              {vendor.hasNonVeg && <VegDot isVeg={false} size={12} />}
-            </span>
-          )}
         </div>
 
-        <p className="mt-1.5 line-clamp-1 text-xs text-ink-faint">
+        <p className="mt-2 line-clamp-1 border-t border-line pt-2 text-xs text-ink-faint">
           📍 {vendor.area}
         </p>
       </div>

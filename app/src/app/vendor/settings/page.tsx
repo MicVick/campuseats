@@ -11,7 +11,7 @@ import { useVendorAuthStore } from "@/stores/vendorAuthStore";
 import { useToast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { formatPrice } from "@/utils/format";
+import { ImageUpload } from "@/components/ImageUpload";
 
 export default function VendorSettingsPage() {
   const router = useRouter();
@@ -25,7 +25,9 @@ export default function VendorSettingsPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [area, setArea] = useState("");
+  const [bannerImage, setBannerImage] = useState<string | null>(null);
   const [upiId, setUpiId] = useState("");
+  const [upiQr, setUpiQr] = useState<string | null>(null);
   const [minOrder, setMinOrder] = useState("");
   const [packagingFee, setPackagingFee] = useState("");
   const [avgPrepTime, setAvgPrepTime] = useState("");
@@ -39,7 +41,9 @@ export default function VendorSettingsPage() {
     setName(profile.name);
     setDescription(profile.description || "");
     setArea(profile.area);
+    setBannerImage(profile.imageUrl ?? null);
     setUpiId(profile.upiId || "");
+    setUpiQr(profile.upiQrImageUrl ?? null);
     setMinOrder(String((profile.minOrder || 0) / 100));
     setPackagingFee(String((profile.packagingFee || 0) / 100));
     setAvgPrepTime(String(profile.avgPrepTimeMins || 15));
@@ -51,8 +55,10 @@ export default function VendorSettingsPage() {
       await updateProfile.mutateAsync({
         name: name.trim(),
         description: description.trim() || null,
+        imageUrl: bannerImage,
         area: area.trim(),
         upiId: upiId.trim() || null,
+        upiQrImageUrl: upiQr,
         minOrder: Math.round(parseFloat(minOrder || "0") * 100),
         packagingFee: Math.round(parseFloat(packagingFee || "0") * 100),
         avgPrepTimeMins: parseInt(avgPrepTime || "15"),
@@ -102,6 +108,12 @@ export default function VendorSettingsPage() {
       <section className="mt-6">
         <h2 className="text-lg font-bold text-ink">Shop Profile</h2>
         <div className="mt-4 space-y-4 rounded-xl bg-surface p-4 shadow-sm">
+          <ImageUpload
+            label="Shop Banner"
+            hint="Shown at the top of your vendor page."
+            value={bannerImage}
+            onChange={setBannerImage}
+          />
           <Field label="Shop Name" value={name} onChange={setName} />
           <Field label="Description" value={description} onChange={setDescription} multiline />
           <Field label="Location / Area" value={area} onChange={setArea} />
@@ -123,6 +135,14 @@ export default function VendorSettingsPage() {
         <h2 className="text-lg font-bold text-ink">UPI Settings</h2>
         <div className="mt-4 space-y-4 rounded-xl bg-surface p-4 shadow-sm">
           <Field label="UPI ID" value={upiId} onChange={setUpiId} placeholder="yourname@upi" />
+          <ImageUpload
+            label="UPI QR Code"
+            hint="Students scan this on the payment page."
+            aspect="square"
+            value={upiQr}
+            onChange={setUpiQr}
+            className="max-w-[220px]"
+          />
         </div>
       </section>
 

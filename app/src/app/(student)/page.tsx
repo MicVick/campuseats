@@ -37,37 +37,34 @@ export default function HomePage() {
   return (
     <div>
       {/* Sticky top bar with veg toggle */}
-      <header className="sticky top-0 z-20 bg-surface/95 px-4 pb-3 pt-4 backdrop-blur">
-        <div className="mb-3 flex items-center justify-between">
-          <div>
-            <p className="text-xs font-medium text-ink-faint">
+      <header className="sticky top-0 z-20 border-b border-line/70 bg-surface/95 px-4 pb-3 pt-4 backdrop-blur md:px-0">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent-600">
               {user ? `Hi, ${user.name.split(" ")[0]} 👋` : "IIMA Campus"}
             </p>
-            <h1 className="text-xl font-black text-ink">What's cooking?</h1>
+            <h1 className="text-2xl font-black text-ink">What&apos;s cooking?</h1>
           </div>
-          {!user && (
+          {!user ? (
             <Link
               href="/login"
-              className="rounded-pill bg-accent-500 px-4 py-2 text-sm font-semibold text-white"
+              className="shrink-0 rounded-pill bg-accent-500 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-accent-500/30"
             >
               Log in
             </Link>
+          ) : (
+            <VegToggle />
           )}
         </div>
-
-        <div className="flex items-center gap-2">
-          <Link
-            href="/search"
-            className="flex h-11 flex-1 items-center gap-2 rounded-xl border border-line bg-white px-4 text-sm text-ink-faint"
-          >
-            🔍 Search dishes, vendors…
-          </Link>
-          <VegToggle />
-        </div>
+        {!user && (
+          <div className="mt-3">
+            <VegToggle />
+          </div>
+        )}
       </header>
 
       {/* Category rail */}
-      <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 py-3">
+      <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 py-3 md:px-0">
         {CATEGORIES.map((c) => (
           <button
             key={c.label}
@@ -84,7 +81,7 @@ export default function HomePage() {
         ))}
       </div>
 
-      <main className="px-4 pb-6">
+      <main className="px-4 pb-6 md:px-0">
         {isLoading && <VendorListSkeleton />}
 
         {isError && <ErrorState onRetry={() => refetch()} />}
