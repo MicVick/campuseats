@@ -64,11 +64,14 @@ export function withErrorHandler(handler: RouteHandler): RouteHandler {
       }
 
       if (error instanceof Error) {
-        // Don't leak internal errors in production
-        const message =
-          process.env.NODE_ENV === 'development'
-            ? error.message
-            : 'An unexpected error occurred';
+        // Don't leak internal errors in production, unless DEBUG_ERRORS is set
+        // (temporary diagnostic flag — remove once the issue is identified)
+        const expose =
+          process.env.NODE_ENV === 'development' ||
+          process.env.DEBUG_ERRORS === '1';
+        const message = expose
+          ? `${error.name}: ${error.message}`
+          : 'An unexpected error occurred';
         return errorResponse(message, 500);
       }
 
