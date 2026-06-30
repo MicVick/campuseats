@@ -13,7 +13,7 @@ export function VendorCard({ vendor }: { vendor: VendorCardLike }) {
     <Link
       href={`/vendors/${vendor.id}`}
       className={cn(
-        "group block overflow-hidden rounded-card bg-surface shadow-sm ring-1 ring-line/60 transition-all hover:-translate-y-0.5 hover:shadow-md",
+        "group block overflow-hidden rounded-2xl bg-surface shadow-sm ring-1 ring-line/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-accent-500/10",
         closed && "opacity-75"
       )}
     >
@@ -22,7 +22,7 @@ export function VendorCard({ vendor }: { vendor: VendorCardLike }) {
           src={vendor.imageUrl}
           alt={vendor.name}
           name={vendor.name}
-          className="h-36 w-full transition-transform duration-300 group-hover:scale-[1.03]"
+          className="h-40 w-full transition-transform duration-500 ease-out group-hover:scale-105"
           emoji="🍴"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />

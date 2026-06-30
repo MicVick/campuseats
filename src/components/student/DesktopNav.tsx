@@ -30,7 +30,7 @@ export function DesktopNav() {
   const total = cartItemTotal(lines);
 
   return (
-    <nav className="sticky top-0 z-50 hidden w-full border-b border-line bg-surface/90 backdrop-blur md:block">
+    <nav className="sticky top-0 z-50 hidden w-full border-b border-line/50 bg-surface/70 backdrop-blur-xl shadow-sm md:block transition-all duration-300">
       <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between px-6">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2">

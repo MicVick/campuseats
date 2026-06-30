@@ -27,7 +27,7 @@ export function GlobalCartBar() {
     <div className="pointer-events-none fixed inset-x-0 bottom-[4.25rem] z-30 px-4 md:hidden">
       <Link
         href="/cart"
-        className="animate-slide-up pointer-events-auto mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl bg-accent-500 px-4 py-3 text-white shadow-lg shadow-accent-500/30"
+        className="animate-slide-up pointer-events-auto mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl bg-gradient-to-r from-accent-600 to-accent-500 px-4 py-3 text-white shadow-xl shadow-accent-500/40 ring-1 ring-white/20 transition-transform active:scale-95"
       >
         <div className="flex items-center gap-3">
           <span className="relative">

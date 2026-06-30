@@ -302,7 +302,7 @@ function VendorContent({
                   <div
                     key={item.id}
                     className={cn(
-                      "flex items-start justify-between gap-3 py-4 sm:rounded-card sm:border sm:border-line sm:p-4",
+                      "flex items-start justify-between gap-3 py-4 sm:rounded-2xl sm:border sm:border-line/40 sm:p-4 sm:shadow-sm sm:transition-all sm:duration-300 sm:hover:-translate-y-1 sm:hover:shadow-lg sm:hover:shadow-accent-500/5",
                       !item.isAvailable && "opacity-60"
                     )}
                   >
@@ -347,8 +347,8 @@ function VendorContent({
                           disabled={disabled}
                           onClick={() => onAddItem(item)}
                           className={cn(
-                            "-mt-4 h-8 rounded-xl border bg-white px-5 text-sm font-bold shadow-sm transition-colors disabled:opacity-50",
-                            "border-accent-200 text-accent-600"
+                            "-mt-4 h-8 rounded-xl border bg-white px-5 text-sm font-bold shadow-sm transition-all duration-300 disabled:opacity-50",
+                            "border-accent-200 text-accent-600 hover:bg-accent-50 hover:border-accent-300 active:scale-95"
                           )}
                         >
                           {qty > 0 ? `ADD · ${qty}` : "ADD"}
