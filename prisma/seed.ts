@@ -2,10 +2,18 @@
 // Creates 6 vendors, menus, vendor accounts, MVRC reports, and test data
 
 import 'dotenv/config';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client';
 import bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient();
+const connectionString =
+  process.env.POSTGRES_URL_NON_POOLING ||
+  process.env.POSTGRES_PRISMA_URL ||
+  process.env.DATABASE_URL;
+
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString }),
+});
 
 async function main() {
   console.log('🌱 Seeding CampusEats database...\n');
