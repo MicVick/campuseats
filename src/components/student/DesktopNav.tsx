@@ -31,7 +31,7 @@ export function DesktopNav() {
 
   return (
     <nav className="sticky top-0 z-50 hidden w-full border-b border-line/50 bg-surface/70 backdrop-blur-xl shadow-sm md:block transition-all duration-300">
-      <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between px-6">
+      <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-6 lg:px-8">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-500 text-base">

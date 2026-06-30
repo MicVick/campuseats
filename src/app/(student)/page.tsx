@@ -112,7 +112,7 @@ export default function HomePage() {
 
             {openVendors.length > 0 && (
               <section>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                   {openVendors.map((v) => (
                     <VendorCard key={v.id} vendor={v} />
                   ))}
@@ -125,7 +125,7 @@ export default function HomePage() {
                 <h2 className="mb-3 text-sm font-bold text-ink-soft">
                   Currently closed
                 </h2>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                   {closedVendors.map((v) => (
                     <VendorCard key={v.id} vendor={v} />
                   ))}

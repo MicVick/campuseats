@@ -11,7 +11,7 @@ export default function StudentLayout({
   return (
     <>
       <DesktopNav />
-      <div className="mx-auto min-h-dvh max-w-screen-xl w-full bg-surface-muted pb-24 md:px-6 md:pb-8">
+      <div className="mx-auto min-h-dvh max-w-screen-2xl w-full bg-surface-muted pb-24 md:px-6 md:pb-8 lg:px-8">
         {children}
       </div>
       <GlobalCartBar />

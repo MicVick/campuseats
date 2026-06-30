@@ -291,7 +291,7 @@ function VendorContent({
             className="scroll-mt-16 pt-5"
           >
             <h2 className="mb-1 text-base font-bold text-ink">{cat.name}</h2>
-            <div className="grid grid-cols-1 divide-y divide-line sm:grid-cols-2 sm:gap-4 sm:divide-y-0 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 divide-y divide-line sm:grid-cols-2 sm:gap-4 sm:divide-y-0 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
               {cat.items.map((item) => {
                 const simpleLine = cartLineForSimpleItem(item.id);
                 const qty = itemQtyInCart(item.id);
