@@ -13,8 +13,16 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// The Vercel/Supabase Postgres pooler uses a self-signed certificate. Newer
+// pg treats `sslmode=require` as strict `verify-full`, which rejects it, so we
+// encrypt without verifying the cert chain.
 const createPrismaClient = () =>
-  new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+  new PrismaClient({
+    adapter: new PrismaPg({
+      connectionString,
+      ssl: { rejectUnauthorized: false },
+    }),
+  });
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 

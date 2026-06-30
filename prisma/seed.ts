@@ -12,7 +12,10 @@ const connectionString =
   process.env.DATABASE_URL;
 
 const prisma = new PrismaClient({
-  adapter: new PrismaPg({ connectionString }),
+  adapter: new PrismaPg({
+    connectionString,
+    ssl: { rejectUnauthorized: false },
+  }),
 });
 
 async function main() {
