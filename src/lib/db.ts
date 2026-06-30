@@ -7,7 +7,7 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient(): PrismaClient {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL;
   // If no DB URL is provided (e.g. during build), Prisma will throw when a query is made, which is fine
   const pool = new Pool({ connectionString });
   const adapter = new PrismaPg(pool);
