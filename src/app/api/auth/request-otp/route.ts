@@ -23,11 +23,12 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     return errorResponse('Too many OTP requests. Please try again in a few minutes.', 429);
   }
 
-  // Generate OTP (mock in dev: use MOCK_OTP_CODE from env, or random 6-digit)
+  // Generate OTP. If MOCK_OTP_CODE is set (incl. on the deployed demo), use it
+  // as a fixed code so any IIMA email can log in without an email provider.
+  // DEMO ONLY — unset MOCK_OTP_CODE in production once real email is wired up.
   const code =
-    process.env.NODE_ENV === 'development' && process.env.MOCK_OTP_CODE
-      ? process.env.MOCK_OTP_CODE
-      : String(Math.floor(100000 + Math.random() * 900000));
+    process.env.MOCK_OTP_CODE ||
+    String(Math.floor(100000 + Math.random() * 900000));
 
   // Store OTP with 5-minute expiry
   await prisma.otpStore.create({
