@@ -6,7 +6,7 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requireVendor } from '@/lib/auth';
 import { createCategorySchema } from '@/lib/validations';
-import { successResponse, createdResponse, withErrorHandler } from '@/lib/api-response';
+import { createdResponse, withErrorHandler } from '@/lib/api-response';
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
   const vendor = requireVendor(request);

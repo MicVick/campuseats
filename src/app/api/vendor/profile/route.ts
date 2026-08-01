@@ -6,7 +6,7 @@ import { prisma } from '@/lib/db';
 import { requireVendor } from '@/lib/auth';
 import { updateVendorProfileSchema } from '@/lib/validations';
 import { successResponse, notFoundResponse, withErrorHandler } from '@/lib/api-response';
-import { parseCuisineTags } from '@/lib/utils';
+import { parseCuisineTags, parseOpenHoursJson } from '@/lib/utils';
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
   const vendor = requireVendor(request);
@@ -20,7 +20,7 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   return successResponse({
     ...profile,
     cuisineTags: parseCuisineTags(profile.cuisineTags),
-    openHours: JSON.parse(profile.openHours),
+    openHours: parseOpenHoursJson(profile.openHours),
   });
 });
 
@@ -46,6 +46,6 @@ export const PATCH = withErrorHandler(async (request: NextRequest) => {
   return successResponse({
     ...updated,
     cuisineTags: parseCuisineTags(updated.cuisineTags),
-    openHours: JSON.parse(updated.openHours),
+    openHours: parseOpenHoursJson(updated.openHours),
   });
 });

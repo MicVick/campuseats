@@ -11,7 +11,7 @@ export default function VendorDashboardPage() {
   return (
     <div className="px-4 py-6 lg:px-8">
       <h1 className="text-2xl font-black text-ink">Dashboard</h1>
-      <p className="mt-1 text-sm text-ink-soft">Today's overview</p>
+      <p className="mt-1 text-sm text-ink-soft">Today&apos;s overview</p>
 
       {/* Stats grid */}
       {isLoading ? (

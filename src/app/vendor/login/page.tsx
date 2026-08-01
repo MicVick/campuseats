@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { apiFetch } from "@/hooks/api";
 import { useVendorAuthStore, type VendorIdentity } from "@/stores/vendorAuthStore";
 import { useToast } from "@/components/Toast";
@@ -87,7 +88,7 @@ export default function VendorLoginPage() {
         </form>
 
         <p className="mt-6 text-center text-xs text-ink-faint">
-          Student? <a href="/" className="font-semibold text-accent-600">Go to student app →</a>
+          Student? <Link href="/" className="font-semibold text-accent-600">Go to student app →</Link>
         </p>
       </div>
     </div>

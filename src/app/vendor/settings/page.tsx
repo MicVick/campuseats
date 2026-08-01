@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useVendorProfile,
   useUpdateVendorProfile,
@@ -15,6 +17,7 @@ import { ImageUpload } from "@/components/ImageUpload";
 
 export default function VendorSettingsPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const toast = useToast();
   const vendorAuth = useVendorAuthStore();
   const { data: profile, isLoading } = useVendorProfile();
@@ -86,7 +89,12 @@ export default function VendorSettingsPage() {
 
   const handleLogout = () => {
     vendorAuth.logout();
-    router.push("/vendor/login");
+    queryClient.removeQueries({
+      predicate: (query) =>
+        typeof query.queryKey[0] === "string" &&
+        query.queryKey[0].startsWith("vendor-"),
+    });
+    router.replace("/vendor/login");
   };
 
   if (isLoading) {
@@ -183,12 +191,12 @@ export default function VendorSettingsPage() {
 
       {/* Hours link */}
       <section className="mt-6">
-        <a
+        <Link
           href="/vendor/hours"
           className="block rounded-xl bg-surface p-4 text-sm font-semibold text-accent-600 shadow-sm hover:bg-accent-50 transition-colors"
         >
           ⏰ Manage Operating Hours →
-        </a>
+        </Link>
       </section>
 
       {/* Logout */}

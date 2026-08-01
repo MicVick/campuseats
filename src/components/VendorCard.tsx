@@ -28,7 +28,11 @@ export function VendorCard({ vendor }: { vendor: VendorCardLike }) {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
         {vendor.isOpen !== undefined && (
           <div className="absolute bottom-2.5 left-2.5">
-            <OpenBadge isOpen={!!vendor.isOpen} nextOpenTime={vendor.nextOpenTime} />
+            <OpenBadge
+              isOpen={!!vendor.isOpen}
+              isTemporarilyClosed={vendor.isTemporarilyClosed}
+              nextOpenTime={vendor.nextOpenTime}
+            />
           </div>
         )}
         {(vendor.hasVeg || vendor.hasNonVeg) && (

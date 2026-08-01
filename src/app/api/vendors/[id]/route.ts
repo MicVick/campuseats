@@ -3,7 +3,12 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { successResponse, notFoundResponse, withErrorHandler } from '@/lib/api-response';
-import { isVendorOpen, getNextOpenTime, parseCuisineTags } from '@/lib/utils';
+import {
+  isVendorOpen,
+  getNextOpenTime,
+  parseCuisineTags,
+  parseOpenHoursJson,
+} from '@/lib/utils';
 
 export const GET = withErrorHandler(async (request: NextRequest, context) => {
   const { id } = await context!.params;
@@ -37,7 +42,9 @@ export const GET = withErrorHandler(async (request: NextRequest, context) => {
   }
 
   const isOpen = isVendorOpen(vendor.openHours, vendor.isTemporarilyClosed);
-  const nextOpen = !isOpen ? getNextOpenTime(vendor.openHours) : null;
+  const nextOpen = !isOpen && !vendor.isTemporarilyClosed
+    ? getNextOpenTime(vendor.openHours)
+    : null;
 
   // Filter by veg if requested
   const { searchParams } = new URL(request.url);
@@ -51,7 +58,7 @@ export const GET = withErrorHandler(async (request: NextRequest, context) => {
   return successResponse({
     ...vendor,
     cuisineTags: parseCuisineTags(vendor.cuisineTags),
-    openHours: JSON.parse(vendor.openHours),
+    openHours: parseOpenHoursJson(vendor.openHours),
     isOpen,
     nextOpenTime: nextOpen,
     categories,

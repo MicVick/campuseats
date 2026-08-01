@@ -55,9 +55,70 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       return errorResponse(`"${menuItem.name}" is currently unavailable`, 400);
     }
 
-    // Calculate item price with options
+    // Resolve every customization against the database. Client-supplied names
+    // and prices are display data only and must never determine the charge.
+    const availableOptions = menuItem.customizationGroups.flatMap((group) =>
+      group.options.map((option) => ({ option, group }))
+    );
+    const selectedOptionIds = new Set<string>();
+    const selectedCountByGroup = new Map<string, number>();
+    const trustedOptions: Array<{
+      id: string;
+      name: string;
+      priceDelta: number;
+    }> = [];
+
+    for (const requestedOption of orderItem.selectedOptions) {
+      const matches = requestedOption.id
+        ? availableOptions.filter(({ option }) => option.id === requestedOption.id)
+        : availableOptions.filter(({ option }) => option.name === requestedOption.name);
+
+      if (matches.length !== 1) {
+        return errorResponse(
+          `Invalid customization for "${menuItem.name}". Please add the item again.`,
+          400
+        );
+      }
+
+      const { option, group } = matches[0];
+      if (selectedOptionIds.has(option.id)) {
+        return errorResponse(`Duplicate customization for "${menuItem.name}"`, 400);
+      }
+
+      selectedOptionIds.add(option.id);
+      selectedCountByGroup.set(
+        group.id,
+        (selectedCountByGroup.get(group.id) ?? 0) + 1
+      );
+      trustedOptions.push({
+        id: option.id,
+        name: option.name,
+        priceDelta: option.priceDelta,
+      });
+    }
+
+    for (const group of menuItem.customizationGroups) {
+      const selectedCount = selectedCountByGroup.get(group.id) ?? 0;
+      const minimum = Math.max(group.minSelect, group.required ? 1 : 0);
+      const maximum = group.type === 'single' ? 1 : group.maxSelect;
+
+      if (selectedCount < minimum) {
+        return errorResponse(
+          `Select at least ${minimum} option${minimum === 1 ? '' : 's'} for "${group.name}"`,
+          400
+        );
+      }
+      if (selectedCount > maximum) {
+        return errorResponse(
+          `Select no more than ${maximum} option${maximum === 1 ? '' : 's'} for "${group.name}"`,
+          400
+        );
+      }
+    }
+
+    // Calculate item price from authoritative menu values.
     let unitPrice = menuItem.price;
-    for (const opt of orderItem.selectedOptions) {
+    for (const opt of trustedOptions) {
       unitPrice += opt.priceDelta;
     }
 
@@ -69,7 +130,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       nameSnapshot: menuItem.name,
       qty: orderItem.qty,
       unitPrice,
-      selectedOptions: JSON.stringify(orderItem.selectedOptions),
+      selectedOptions: JSON.stringify(trustedOptions),
       itemNote: orderItem.itemNote,
     });
   }

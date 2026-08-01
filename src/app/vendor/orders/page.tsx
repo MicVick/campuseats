@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useVendorOrders, useVendorOrderAction, type VendorOrder } from "@/hooks/useVendorApi";
+import { useVendorOrders, useVendorOrderAction } from "@/hooks/useVendorApi";
 import { useToast } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { ConfirmDialog } from "@/components/ui/Sheet";
 import { formatPrice, timeAgo, cn } from "@/utils/format";
 import { useNewOrderSound } from "@/hooks/useNewOrderSound";
 
@@ -20,11 +19,6 @@ const TABS = [
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
-
-function tabFilter(tab: TabKey): string | undefined {
-  if (tab === "active") return undefined; // we filter client-side
-  return tab;
-}
 
 export default function VendorOrdersPage() {
   const [tab, setTab] = useState<TabKey>("placed");
@@ -142,7 +136,7 @@ export default function VendorOrdersPage() {
                     </span>
                   )}
                   {item.itemNote && (
-                    <span className="text-xs italic text-ink-faint">"{item.itemNote}"</span>
+                    <span className="text-xs italic text-ink-faint">&ldquo;{item.itemNote}&rdquo;</span>
                   )}
                 </div>
               ))}

@@ -5,6 +5,7 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requireVendor } from '@/lib/auth';
 import { successResponse, withErrorHandler } from '@/lib/api-response';
+import { getCampusDayRange } from '@/lib/utils';
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
   const vendor = requireVendor(request);
@@ -19,13 +20,12 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
 });
 
 async function getSummary(vendorId: string) {
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
+  const { start, end } = getCampusDayRange();
 
   const orders = await prisma.order.findMany({
     where: {
       vendorId,
-      placedAt: { gte: startOfDay },
+      placedAt: { gte: start, lt: end },
     },
     select: { status: true, grandTotal: true },
   });

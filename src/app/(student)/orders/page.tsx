@@ -10,7 +10,7 @@ import { useToast } from "@/components/Toast";
 import { StatusBadge } from "@/components/ui/Badge";
 import { VendorListSkeleton } from "@/components/ui/Skeleton";
 import { EmptyState, ErrorState } from "@/components/ui/EmptyState";
-import { formatPrice, formatDateTime, timeAgo, cn } from "@/utils/format";
+import { formatPrice, formatDateTime, cn } from "@/utils/format";
 import type { Order } from "@/types";
 
 function OrdersInner() {

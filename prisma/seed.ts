@@ -67,7 +67,7 @@ async function main() {
     },
   });
 
-  const student3 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       name: 'Rahul Mehta',
       email: 'rahul.mehta@iima.ac.in',

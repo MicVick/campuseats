@@ -1,5 +1,7 @@
 // Formatting helpers. Money is stored in paise (integer).
 
+import { CAMPUS_TIME_ZONE } from "@/lib/utils";
+
 /** Format paise as ₹ amount. 6000 → "₹60". Shows decimals only when needed. */
 export function formatPrice(paise: number): string {
   const rupees = paise / 100;
@@ -66,14 +68,59 @@ export const ORDER_STATUS_LABEL: Record<string, string> = {
 };
 
 const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+const DAY_INDEX_BY_NAME: Record<string, number> = {
+  sun: 0,
+  mon: 1,
+  tue: 2,
+  wed: 3,
+  thu: 4,
+  fri: 5,
+  sat: 6,
+};
 
 /** Today's open/close window as a label, e.g. "7:30 AM – 10:00 PM" or "Closed today". */
 export function todayHoursLabel(
   openHours: Record<string, { open: string; close: string }>
 ): string {
-  const today = openHours[DAY_KEYS[new Date().getDay()]];
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: CAMPUS_TIME_ZONE,
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    })
+      .formatToParts(new Date())
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, part.value])
+  );
+  const dayName = parts.weekday.toLowerCase();
+  const dayIndex = DAY_INDEX_BY_NAME[dayName];
+  const nowMinutes = Number(parts.hour) * 60 + Number(parts.minute);
+  const previousDay = openHours[DAY_KEYS[(dayIndex + 6) % 7]];
+
+  if (previousDay) {
+    const previousOpen = timeToMinutes(previousDay.open);
+    const previousClose = timeToMinutes(previousDay.close);
+    if (
+      previousOpen !== null &&
+      previousClose !== null &&
+      previousClose < previousOpen &&
+      nowMinutes < previousClose
+    ) {
+      return `${to12h(previousDay.open)} – ${to12h(previousDay.close)}`;
+    }
+  }
+
+  const today = openHours[DAY_KEYS[dayIndex]];
   if (!today) return "Closed today";
   return `${to12h(today.open)} – ${to12h(today.close)}`;
+}
+
+function timeToMinutes(hhmm: string): number | null {
+  if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(hhmm)) return null;
+  const [hour, minute] = hhmm.split(":").map(Number);
+  return hour * 60 + minute;
 }
 
 function to12h(hhmm: string): string {

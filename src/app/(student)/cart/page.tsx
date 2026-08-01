@@ -76,7 +76,7 @@ export default function CartPage() {
                   </p>
                 )}
                 {line.itemNote && (
-                  <p className="mt-0.5 text-xs text-ink-faint italic">"{line.itemNote}"</p>
+                  <p className="mt-0.5 text-xs text-ink-faint italic">&ldquo;{line.itemNote}&rdquo;</p>
                 )}
                 <p className="mt-1 text-sm font-medium text-ink">
                   {formatPrice(lineTotal(line))}

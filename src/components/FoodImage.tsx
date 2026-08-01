@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import { useState } from "react";
 import { cn } from "@/utils/format";
@@ -51,7 +52,6 @@ export function FoodImage({
     );
   }
 
-  // eslint-disable-next-line @next/next/no-img-element
   return (
     <img
       src={src}

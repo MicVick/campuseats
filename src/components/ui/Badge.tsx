@@ -50,9 +50,11 @@ export function VegLabel({ isVeg }: { isVeg: boolean }) {
 
 export function OpenBadge({
   isOpen,
+  isTemporarilyClosed = false,
   nextOpenTime,
 }: {
   isOpen: boolean;
+  isTemporarilyClosed?: boolean;
   nextOpenTime?: string | null;
 }) {
   if (isOpen) {
@@ -60,6 +62,14 @@ export function OpenBadge({
       <span className="inline-flex items-center gap-1.5 rounded-pill bg-veg-soft px-2.5 py-1 text-xs font-semibold text-veg">
         <span className="h-1.5 w-1.5 rounded-full bg-veg" />
         Open now
+      </span>
+    );
+  }
+  if (isTemporarilyClosed) {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-pill bg-nonveg-soft px-2.5 py-1 text-xs font-semibold text-danger">
+        <span className="h-1.5 w-1.5 rounded-full bg-danger" />
+        Temporarily closed
       </span>
     );
   }
@@ -164,4 +174,3 @@ export function StatusBadge({ status }: { status: string }) {
     </Badge>
   );
 }
-

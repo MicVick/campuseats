@@ -4,7 +4,12 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { successResponse, withErrorHandler } from '@/lib/api-response';
-import { isVendorOpen, getNextOpenTime, parseCuisineTags } from '@/lib/utils';
+import {
+  isVendorOpen,
+  getNextOpenTime,
+  parseCuisineTags,
+  parseOpenHoursJson,
+} from '@/lib/utils';
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = new URL(request.url);
@@ -49,12 +54,15 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   // Transform vendors with computed fields
   let result = vendors.map((vendor) => {
     const isOpen = isVendorOpen(vendor.openHours, vendor.isTemporarilyClosed);
-    const nextOpen = !isOpen ? getNextOpenTime(vendor.openHours) : null;
+    const nextOpen = !isOpen && !vendor.isTemporarilyClosed
+      ? getNextOpenTime(vendor.openHours)
+      : null;
     const tags = parseCuisineTags(vendor.cuisineTags);
 
     return {
       ...vendor,
       cuisineTags: tags,
+      openHours: parseOpenHoursJson(vendor.openHours),
       isOpen,
       nextOpenTime: nextOpen,
     };

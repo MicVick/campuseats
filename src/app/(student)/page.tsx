@@ -25,9 +25,11 @@ export default function HomePage() {
   const vegOnly = usePrefsStore((s) => s.vegOnly);
   const user = useAuthStore((s) => s.user);
   const [category, setCategory] = useState("");
+  const [openOnly, setOpenOnly] = useState(false);
 
   const { data, isLoading, isError, refetch } = useVendors({
     veg: vegOnly,
+    openNow: openOnly,
     category: category || undefined,
   });
 
@@ -65,6 +67,20 @@ export default function HomePage() {
 
       {/* Category rail */}
       <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 py-3 md:px-0">
+        <button
+          type="button"
+          aria-pressed={openOnly}
+          onClick={() => setOpenOnly((current) => !current)}
+          className={cn(
+            "inline-flex shrink-0 items-center gap-2 rounded-pill border px-3.5 py-1.5 text-sm font-semibold transition-colors",
+            openOnly
+              ? "border-veg bg-veg text-white"
+              : "border-veg/30 bg-veg-soft text-veg"
+          )}
+        >
+          <span className={cn("h-2 w-2 rounded-full", openOnly ? "bg-white" : "bg-veg")} />
+          Open now
+        </button>
         {CATEGORIES.map((c) => (
           <button
             key={c.label}
@@ -91,16 +107,27 @@ export default function HomePage() {
             {data.length === 0 && (
               <EmptyState
                 icon={vegOnly ? "🥗" : "🍽️"}
-                title={vegOnly ? "No veg vendors here" : "No vendors found"}
+                title={
+                  openOnly
+                    ? "No vendors open right now"
+                    : vegOnly
+                      ? "No veg vendors here"
+                      : "No vendors found"
+                }
                 message={
-                  vegOnly
+                  openOnly
+                    ? "Turn off Open now to see upcoming opening times."
+                    : vegOnly
                     ? "Try turning off the Veg Only filter or pick another category."
                     : "Try a different category."
                 }
                 action={
-                  (vegOnly || category) && (
+                  (vegOnly || category || openOnly) && (
                     <button
-                      onClick={() => setCategory("")}
+                      onClick={() => {
+                        setCategory("");
+                        setOpenOnly(false);
+                      }}
                       className="text-sm font-semibold text-accent-600"
                     >
                       Clear filters

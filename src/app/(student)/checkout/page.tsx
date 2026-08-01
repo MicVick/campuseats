@@ -4,13 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCartStore, cartItemTotal, cartCount } from "@/stores/cartStore";
-import { useAuthStore } from "@/stores/authStore";
 import { usePlaceOrder } from "@/hooks/useOrders";
 import { useToast } from "@/components/Toast";
 import { RequireAuth } from "@/components/student/RequireAuth";
 import { Button } from "@/components/ui/Button";
 import { VegDot } from "@/components/ui/Badge";
-import { ChevronLeftIcon, MapPinIcon } from "@/components/icons";
+import { ChevronLeftIcon } from "@/components/icons";
 import { formatPrice } from "@/utils/format";
 
 function CheckoutInner() {

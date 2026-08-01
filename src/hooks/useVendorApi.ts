@@ -298,7 +298,11 @@ export function useUpdateVendorProfile() {
         auth: "vendor",
         body,
       }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["vendor-profile"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["vendor-profile"] });
+      qc.invalidateQueries({ queryKey: ["vendors"] });
+      qc.invalidateQueries({ queryKey: ["vendor"] });
+    },
   });
 }
 

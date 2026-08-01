@@ -8,12 +8,12 @@ import { useOrderStatusToast } from "@/hooks/useOrderStatusToast";
 import { useToast } from "@/components/Toast";
 import { RequireAuth } from "@/components/student/RequireAuth";
 import { Button } from "@/components/ui/Button";
-import { VegDot, StatusBadge } from "@/components/ui/Badge";
+import { StatusBadge } from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ErrorState } from "@/components/ui/EmptyState";
 import { ConfirmDialog } from "@/components/ui/Sheet";
-import { ChevronLeftIcon, MapPinIcon, ClockIcon, PhoneIcon } from "@/components/icons";
-import { formatPrice, formatTime, formatDateTime, ORDER_STATUS_LABEL, cn } from "@/utils/format";
+import { ChevronLeftIcon, MapPinIcon, ClockIcon } from "@/components/icons";
+import { formatPrice, formatTime, ORDER_STATUS_LABEL, cn } from "@/utils/format";
 import type { OrderStatus } from "@/types";
 
 const STEPS: OrderStatus[] = ["placed", "accepted", "preparing", "ready_for_pickup", "completed"];

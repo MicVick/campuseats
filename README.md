@@ -12,7 +12,7 @@ This is a single Next.js app containing **both** the student app and the vendor 
 
 **Student app**
 - IIMA email OTP login (`@iima.ac.in` only) + Google sign-in
-- Home discovery feed — open-first ordering, category rail, **prominent Veg-Only toggle** (synced everywhere)
+- Home discovery feed — open-first ordering, **Open now** filter, category rail, and prominent Veg-Only toggle
 - Search across vendors **and** dishes (dish results deep-link into the vendor menu)
 - Vendor page with dual ratings, **MVRC transparency report**, sticky category nav
 - Item customization sheet (sizes, add-ons, notes) with live pricing
@@ -26,7 +26,7 @@ This is a single Next.js app containing **both** the student app and the vendor 
 - Separate email/password login
 - Order queue (New · Active · Ready · Completed) with accept/reject/mark-ready/complete + new-order sound
 - Menu management (categories, items, availability toggle, customizations)
-- Operating hours + "close now"
+- Operating hours + immediate "open now" / temporary-close controls
 - Ratings & feedback dashboard, vendor profile/UPI settings
 
 ---
@@ -40,7 +40,7 @@ This is a single Next.js app containing **both** the student app and the vendor 
 | Data fetching | TanStack React Query |
 | Client state | Zustand (auth, cart, vendor-auth, prefs) — persisted to localStorage |
 | Backend | Next.js API routes |
-| DB / ORM | **SQLite** via **Prisma 7** (zero external setup) |
+| DB / ORM | **PostgreSQL** via **Prisma 7** and the `pg` driver adapter |
 | Auth | JWT · email OTP (mocked) · Google OAuth (domain-restricted) · bcrypt for vendors |
 | Money | Stored as **integer paise** throughout |
 
@@ -51,21 +51,22 @@ This is a single Next.js app containing **both** the student app and the vendor 
 ### Prerequisites
 - **Node.js 20+** (developed on v22)
 - npm
+- A PostgreSQL database (local or hosted, such as Supabase)
 
 ### Setup
 
 ```bash
-# 1. Go into the app
-cd app
+# 1. Go into the repository
+cd CampusEats
 
-# 2. Install dependencies (also runs `prisma generate`)
-npm install
-
-# 3. Create your environment file
+# 2. Create your environment file and replace DATABASE_URL with your PostgreSQL URL
 cp .env.example .env       # Windows (PowerShell): copy .env.example .env
 
-# 4. Set up the database (SQLite, created locally) and seed demo data
-npm run db:migrate         # apply schema → creates app/dev.db
+# 3. Install dependencies (also runs `prisma generate`)
+npm install
+
+# 4. Set up and seed the database
+npm run db:push            # apply the Prisma schema to PostgreSQL
 npm run db:seed            # 6 vendors, menus, MVRC reports, test users & orders
 
 # 5. Start the dev server
@@ -74,8 +75,9 @@ npm run dev
 
 Open **http://localhost:3000**.
 
-> The repo already ships with a seeded `dev.db`. If you want a clean slate at any
-> point, run `npm run db:reset` (drops, re-migrates, and re-seeds).
+> `DATABASE_URL` must be a `postgresql://` URL. For Supabase/Vercel, you can also
+> provide `POSTGRES_PRISMA_URL` (pooled runtime connection) and
+> `POSTGRES_URL_NON_POOLING` (direct migration connection).
 
 ---
 

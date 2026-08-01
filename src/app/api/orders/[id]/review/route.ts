@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requireStudent } from '@/lib/auth';
 import { reviewSchema } from '@/lib/validations';
-import { successResponse, notFoundResponse, errorResponse, createdResponse, withErrorHandler } from '@/lib/api-response';
+import { notFoundResponse, errorResponse, createdResponse, withErrorHandler } from '@/lib/api-response';
 
 export const POST = withErrorHandler(async (request: NextRequest, context) => {
   const student = requireStudent(request);

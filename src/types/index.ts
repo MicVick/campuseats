@@ -33,6 +33,7 @@ export interface VendorCard {
   minOrder: number;
   packagingFee: number;
   avgPrepTimeMins: number;
+  isTemporarilyClosed: boolean;
   isOpen: boolean;
   nextOpenTime: string | null;
 }
@@ -119,6 +120,7 @@ export interface VendorCardLike {
   hasNonVeg?: boolean;
   minOrder?: number;
   isOpen?: boolean;
+  isTemporarilyClosed?: boolean;
   nextOpenTime?: string | null;
   favouriteId?: string;
 }
@@ -151,6 +153,7 @@ export interface User {
 // ─── Orders ───────────────────────────────────────────────────────
 
 export interface SelectedOption {
+  id?: string;
   name: string;
   priceDelta: number;
 }

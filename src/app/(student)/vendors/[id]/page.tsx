@@ -40,7 +40,12 @@ export default function VendorPage() {
     );
 
   return (
-    <VendorContent vendor={vendor} vegOnly={vegOnly} deepLinkItem={deepLinkItem} />
+    <VendorContent
+      key={`${vendor.id}:${deepLinkItem ?? ""}`}
+      vendor={vendor}
+      vegOnly={vegOnly}
+      deepLinkItem={deepLinkItem}
+    />
   );
 }
 
@@ -57,7 +62,14 @@ function VendorContent({
   const cart = useCartStore();
 
   const [activeCat, setActiveCat] = useState<string>("");
-  const [sheetItem, setSheetItem] = useState<MenuItem | null>(null);
+  const [sheetItem, setSheetItem] = useState<MenuItem | null>(() => {
+    if (!deepLinkItem) return null;
+    for (const category of vendor.categories) {
+      const item = category.items.find((candidate) => candidate.id === deepLinkItem);
+      if (item?.isAvailable && item.customizationGroups.length > 0) return item;
+    }
+    return null;
+  });
   const [pending, setPending] = useState<PendingLine | null>(null);
   const [confirmSwitch, setConfirmSwitch] = useState(false);
 
@@ -80,9 +92,6 @@ function VendorContent({
       const item = c.items.find((i) => i.id === deepLinkItem);
       if (item) {
         sectionRefs.current[c.id]?.scrollIntoView({ behavior: "smooth" });
-        if (item.customizationGroups.length > 0 && item.isAvailable) {
-          setSheetItem(item);
-        }
         break;
       }
     }
@@ -131,7 +140,11 @@ function VendorContent({
   const onAddItem = (item: MenuItem) => {
     if (closed) {
       toast.info(
-        vendor.nextOpenTime ? `Opens ${vendor.nextOpenTime}` : "Vendor is closed"
+        vendor.isTemporarilyClosed
+          ? "Vendor is temporarily closed"
+          : vendor.nextOpenTime
+            ? `Opens ${vendor.nextOpenTime}`
+            : "Vendor is closed"
       );
       return;
     }
@@ -188,7 +201,11 @@ function VendorContent({
               {vendor.cuisineTags.join(" · ")}
             </p>
           </div>
-          <OpenBadge isOpen={!!vendor.isOpen} nextOpenTime={vendor.nextOpenTime} />
+          <OpenBadge
+            isOpen={!!vendor.isOpen}
+            isTemporarilyClosed={vendor.isTemporarilyClosed}
+            nextOpenTime={vendor.nextOpenTime}
+          />
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">

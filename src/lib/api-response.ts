@@ -59,7 +59,7 @@ export function withErrorHandler(handler: RouteHandler): RouteHandler {
       }
 
       if (error instanceof ZodError) {
-        const messages = (error as any).errors.map((e: any) => e.message).join('; ');
+        const messages = error.issues.map((issue) => issue.message).join('; ');
         return errorResponse(`Validation error: ${messages}`, 422);
       }
 

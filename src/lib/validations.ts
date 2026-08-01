@@ -68,8 +68,10 @@ export const orderItemSchema = z.object({
   qty: z.number().int().min(1).max(50),
   selectedOptions: z.array(
     z.object({
+      id: z.string().uuid().optional(),
       name: z.string(),
-      priceDelta: z.number().int(),
+      // Display-only client value. The order API always reloads the price.
+      priceDelta: z.number().int().optional(),
     })
   ).default([]),
   itemNote: z.string().max(500).optional(),
@@ -155,6 +157,15 @@ export const updateAvailabilitySchema = z.object({
   isAvailable: z.boolean(),
 });
 
+const operatingTimeSchema = z
+  .string()
+  .regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/, 'Time must use a valid HH:MM value');
+
+const operatingHoursEntrySchema = z.object({
+  open: operatingTimeSchema,
+  close: operatingTimeSchema,
+});
+
 export const updateVendorProfileSchema = z.object({
   name: z.string().min(1).max(200).optional(),
   description: z.string().max(1000).optional().nullable(),
@@ -166,13 +177,18 @@ export const updateVendorProfileSchema = z.object({
   minOrder: z.number().int().min(0).optional(),
   packagingFee: z.number().int().min(0).optional(),
   avgPrepTimeMins: z.number().int().min(1).max(120).optional(),
-  openHours: z.record(
-    z.string(),
-    z.object({
-      open: z.string().regex(/^\d{2}:\d{2}$/),
-      close: z.string().regex(/^\d{2}:\d{2}$/),
+  openHours: z
+    .object({
+      mon: operatingHoursEntrySchema.optional(),
+      tue: operatingHoursEntrySchema.optional(),
+      wed: operatingHoursEntrySchema.optional(),
+      thu: operatingHoursEntrySchema.optional(),
+      fri: operatingHoursEntrySchema.optional(),
+      sat: operatingHoursEntrySchema.optional(),
+      sun: operatingHoursEntrySchema.optional(),
     })
-  ).optional(),
+    .strict()
+    .optional(),
   isTemporarilyClosed: z.boolean().optional(),
 });
 

@@ -25,6 +25,8 @@ export function useVendors(filters: VendorFilters) {
           q: filters.q,
         },
       }),
+    refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -37,5 +39,7 @@ export function useVendor(id: string | undefined, vegOnly = false) {
         // Note: we fetch the full menu and filter veg client-side so the
         // toggle is instant and doesn't drop categories on the server.
       }),
+    refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
   });
 }

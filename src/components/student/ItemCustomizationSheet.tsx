@@ -40,7 +40,9 @@ export function ItemCustomizationSheet({
     for (const g of item.customizationGroups) {
       const ids = g.options
         .filter((o) =>
-          initial.selectedOptions.some((s) => s.name === o.name)
+          initial.selectedOptions.some((s) =>
+            s.id ? s.id === o.id : s.name === o.name
+          )
         )
         .map((o) => o.id);
       if (ids.length) map[g.id] = ids;
@@ -75,7 +77,9 @@ export function ItemCustomizationSheet({
     for (const g of item.customizationGroups) {
       const ids = selected[g.id] ?? [];
       for (const o of g.options) {
-        if (ids.includes(o.id)) out.push({ name: o.name, priceDelta: o.priceDelta });
+        if (ids.includes(o.id)) {
+          out.push({ id: o.id, name: o.name, priceDelta: o.priceDelta });
+        }
       }
     }
     return out;

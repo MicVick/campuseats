@@ -3,8 +3,16 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 import { useVendorAuthStore } from "@/stores/vendorAuthStore";
-import { BarChartIcon, ListIcon, MenuIcon, SettingsIcon, ClockIcon } from "@/components/icons";
+import {
+  BarChartIcon,
+  ListIcon,
+  MenuIcon,
+  SettingsIcon,
+  ClockIcon,
+  LogoutIcon,
+} from "@/components/icons";
 import { cn } from "@/utils/format";
 
 const NAV_ITEMS = [
@@ -22,7 +30,9 @@ export default function VendorLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const vendor = useVendorAuthStore((s) => s.vendor);
+  const logout = useVendorAuthStore((s) => s.logout);
   const hydrated = useVendorAuthStore((s) => s.hydrated);
 
   // Redirect to login if not authenticated
@@ -42,6 +52,16 @@ export default function VendorLayout({
 
   // Still redirecting
   if (!vendor) return null;
+
+  const handleLogout = () => {
+    logout();
+    queryClient.removeQueries({
+      predicate: (query) =>
+        typeof query.queryKey[0] === "string" &&
+        query.queryKey[0].startsWith("vendor-"),
+    });
+    router.replace("/vendor/login");
+  };
 
   return (
     <div className="flex min-h-dvh bg-surface-muted">
@@ -71,6 +91,16 @@ export default function VendorLayout({
             );
           })}
         </nav>
+        <div className="border-t border-line p-3">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-danger transition-colors hover:bg-nonveg-soft"
+          >
+            <LogoutIcon className="h-5 w-5" />
+            Log out
+          </button>
+        </div>
       </aside>
 
       {/* Main content */}

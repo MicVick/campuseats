@@ -243,9 +243,9 @@ function LoginInner() {
         {step === "name" && (
           <div className="animate-fade-in space-y-4">
             <div className="text-center">
-              <h2 className="text-lg font-bold text-ink">What's your name?</h2>
+              <h2 className="text-lg font-bold text-ink">What&apos;s your name?</h2>
               <p className="mt-1 text-sm text-ink-soft">
-                So vendors know who's picking up.
+                So vendors know who&apos;s picking up.
               </p>
             </div>
             <input
@@ -270,7 +270,7 @@ function LoginInner() {
       </div>
 
       <p className="pb-8 text-center text-xs text-ink-faint">
-        By continuing you agree to CampusEats' campus dining guidelines.
+        By continuing you agree to CampusEats&apos; campus dining guidelines.
       </p>
     </div>
   );

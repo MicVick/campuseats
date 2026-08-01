@@ -4,7 +4,8 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requireVendor } from '@/lib/auth';
-import { successResponse, withErrorHandler } from '@/lib/api-response';
+import { errorResponse, successResponse, withErrorHandler } from '@/lib/api-response';
+import { getCampusDayRange } from '@/lib/utils';
 
 export const GET = withErrorHandler(async (request: NextRequest) => {
   const vendor = requireVendor(request);
@@ -19,9 +20,12 @@ export const GET = withErrorHandler(async (request: NextRequest) => {
   }
 
   if (date) {
-    const startOfDay = new Date(date + 'T00:00:00Z');
-    const endOfDay = new Date(date + 'T23:59:59Z');
-    where.placedAt = { gte: startOfDay, lte: endOfDay };
+    try {
+      const { start, end } = getCampusDayRange(date);
+      where.placedAt = { gte: start, lt: end };
+    } catch {
+      return errorResponse('date must be a valid YYYY-MM-DD value', 422);
+    }
   }
 
   const orders = await prisma.order.findMany({

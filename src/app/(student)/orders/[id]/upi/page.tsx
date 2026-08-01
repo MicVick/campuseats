@@ -1,6 +1,6 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
-import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useOrder } from "@/hooks/useOrders";
@@ -103,7 +103,7 @@ function UpiInner() {
             <span className="text-4xl">💵</span>
             <h2 className="mt-3 text-lg font-bold text-ink">Pay cash at counter</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              This vendor doesn't have UPI configured. Please pay in cash when you pick up your order.
+              This vendor doesn&apos;t have UPI configured. Please pay in cash when you pick up your order.
             </p>
           </div>
         )}

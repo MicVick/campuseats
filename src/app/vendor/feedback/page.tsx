@@ -5,8 +5,6 @@ import {
   useVendorReviews,
   useVendorFeedbackList,
   useVendorProfile,
-  type VendorReview,
-  type VendorFeedback,
 } from "@/hooks/useVendorApi";
 import { Stars } from "@/components/ui/StarRating";
 import { RatingBadge, MvrcBadge, Badge } from "@/components/ui/Badge";

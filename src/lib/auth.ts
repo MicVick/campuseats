@@ -1,11 +1,11 @@
 // JWT Auth Utilities
 // Handles token generation, verification, and extraction from requests
 
-import jwt from 'jsonwebtoken';
+import jwt, { type SignOptions } from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'campuseats-fallback-secret';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+const JWT_EXPIRES_IN = (process.env.JWT_EXPIRES_IN || '7d') as SignOptions['expiresIn'];
 
 // ─── Types ──────────────────────────────────────────────────────
 
@@ -28,13 +28,13 @@ export type TokenPayload = StudentTokenPayload | VendorTokenPayload;
 
 export function generateStudentToken(payload: Omit<StudentTokenPayload, 'type'>): string {
   return jwt.sign({ ...payload, type: 'student' }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN as any,
+    expiresIn: JWT_EXPIRES_IN,
   });
 }
 
 export function generateVendorToken(payload: Omit<VendorTokenPayload, 'type'>): string {
   return jwt.sign({ ...payload, type: 'vendor' }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN as any,
+    expiresIn: JWT_EXPIRES_IN,
   });
 }
 
