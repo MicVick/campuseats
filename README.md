@@ -40,7 +40,7 @@ This is a single Next.js app containing **both** the student app and the vendor 
 | Data fetching | TanStack React Query |
 | Client state | Zustand (auth, cart, vendor-auth, prefs) — persisted to localStorage |
 | Backend | Next.js API routes |
-| DB / ORM | **PostgreSQL** via **Prisma 7** and the `pg` driver adapter |
+| DB / ORM | **MySQL** via **Prisma 7** and the `mariadb` driver adapter |
 | Auth | JWT · email OTP (mocked) · Google OAuth (domain-restricted) · bcrypt for vendors |
 | Money | Stored as **integer paise** throughout |
 
@@ -51,7 +51,7 @@ This is a single Next.js app containing **both** the student app and the vendor 
 ### Prerequisites
 - **Node.js 20+** (developed on v22)
 - npm
-- A PostgreSQL database (local or hosted, such as Supabase)
+- A MySQL database (local, Docker, or hosted)
 
 ### Setup
 
@@ -59,14 +59,14 @@ This is a single Next.js app containing **both** the student app and the vendor 
 # 1. Go into the repository
 cd CampusEats
 
-# 2. Create your environment file and replace DATABASE_URL with your PostgreSQL URL
+# 2. Create your environment file and replace DATABASE_URL with your MySQL URL
 cp .env.example .env       # Windows (PowerShell): copy .env.example .env
 
 # 3. Install dependencies (also runs `prisma generate`)
 npm install
 
 # 4. Set up and seed the database
-npm run db:push            # apply the Prisma schema to PostgreSQL
+npm run db:push            # apply the Prisma schema to MySQL
 npm run db:seed            # 6 vendors, menus, MVRC reports, test users & orders
 
 # 5. Start the dev server
@@ -75,9 +75,9 @@ npm run dev
 
 Open **http://localhost:3000**.
 
-> `DATABASE_URL` must be a `postgresql://` URL. For Supabase/Vercel, you can also
-> provide `POSTGRES_PRISMA_URL` (pooled runtime connection) and
-> `POSTGRES_URL_NON_POOLING` (direct migration connection).
+> `DATABASE_URL` must be a `mysql://` URL, e.g.
+> `mysql://user:password@host:3306/database_name`. A `docker-compose.yml` is
+> included to spin up a local MySQL 8 instance (`docker compose up -d`).
 
 ---
 
@@ -186,4 +186,4 @@ CampusEats/
 - **Payments are informational** — COD only; the UPI QR page does not verify payment. Confirmation happens at the counter.
 - **Pickup only.** Delivery, online payment gateways, push/SMS notifications, and vendor self-registration are deferred (see PRD §16).
 - Vendor images/UPI QR codes reference placeholder paths and fall back to branded gradients in the UI.
-- SQLite + a local `dev.db` keeps the MVP zero-setup; swap the Prisma datasource to Postgres for production.
+- Uses MySQL via Prisma; `docker-compose.yml` provides a zero-setup local instance for the MVP.

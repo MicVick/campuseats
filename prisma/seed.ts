@@ -2,31 +2,12 @@
 // Creates 6 vendors, menus, vendor accounts, MVRC reports, and test data
 
 import 'dotenv/config';
-import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import { PrismaClient } from '../src/generated/prisma/client';
 import bcrypt from 'bcryptjs';
 
-// Strip `sslmode` so newer pg doesn't treat `require` as strict `verify-full`
-// (which rejects Supabase's self-signed cert and overrides the ssl option).
-const rawConnectionString =
-  process.env.POSTGRES_URL_NON_POOLING ||
-  process.env.POSTGRES_PRISMA_URL ||
-  process.env.DATABASE_URL ||
-  '';
-let connectionString = rawConnectionString;
-try {
-  const url = new URL(rawConnectionString);
-  url.searchParams.delete('sslmode');
-  connectionString = url.toString();
-} catch {
-  // not a parseable URL — use as-is
-}
-
 const prisma = new PrismaClient({
-  adapter: new PrismaPg({
-    connectionString,
-    ssl: { rejectUnauthorized: false },
-  }),
+  adapter: new PrismaMariaDb(process.env.DATABASE_URL || ''),
 });
 
 async function main() {

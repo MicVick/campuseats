@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 // ─── Student User ───────────────────────────────────────────────
@@ -30,24 +30,24 @@ model User {
 model Vendor {
   id                  String   @id @default(uuid())
   name                String
-  description         String?
-  imageUrl            String?
-  cuisineTags         String   @default("[]") // JSON array stored as string (SQLite)
+  description         String?  @db.Text
+  imageUrl            String?  @db.Text
+  cuisineTags         String   @db.Text // JSON array stored as string
   area                String   @default("")
   hasVeg              Boolean  @default(true)
   hasNonVeg           Boolean  @default(false)
   avgRating           Float    @default(0)
   ratingCount         Int      @default(0)
   mvrcRating          Float?
-  mvrcReportUrl       String?
+  mvrcReportUrl       String?  @db.Text
   mvrcAssessmentDate  DateTime?
-  openHours           String   @default("{}") // JSON: { "mon": { "open": "08:00", "close": "22:00" }, ... }
+  openHours           String   @db.Text // JSON: { "mon": { "open": "08:00", "close": "22:00" }, ... }
   pickupAvailable     Boolean  @default(true)
   minOrder            Int      @default(0) // in paise (or smallest currency unit)
   packagingFee        Int      @default(0)
   avgPrepTimeMins     Int      @default(20)
   upiId               String?
-  upiQrImageUrl       String?
+  upiQrImageUrl       String?  @db.Text
   isTemporarilyClosed Boolean  @default(false)
   createdAt           DateTime @default(now())
 
@@ -90,9 +90,9 @@ model MenuItem {
   vendorId    String
   categoryId  String
   name        String
-  description String?
+  description String?  @db.Text
   price       Int // in paise
-  imageUrl    String?
+  imageUrl    String?  @db.Text
   isVeg       Boolean @default(true)
   isAvailable Boolean @default(true)
 
@@ -130,15 +130,15 @@ model Order {
   userId              String
   vendorId            String
   status              String   @default("placed") // placed|accepted|preparing|ready_for_pickup|completed|cancelled|rejected
-  rejectionReason     String?
+  rejectionReason     String?  @db.Text
   itemTotal           Int // in paise
   packagingFee        Int      @default(0)
   grandTotal          Int
   paymentMethod       String   @default("cod")
-  specialInstructions String?
+  specialInstructions String?  @db.Text
   estimatedPrepMins   Int?
   placedAt            DateTime @default(now())
-  statusTimeline      String   @default("[]") // JSON array: [{ "status": "placed", "at": "ISO timestamp" }]
+  statusTimeline      String   @db.Text // JSON array: [{ "status": "placed", "at": "ISO timestamp" }]
 
   user      User        @relation(fields: [userId], references: [id])
   vendor    Vendor      @relation(fields: [vendorId], references: [id])
@@ -154,8 +154,8 @@ model OrderItem {
   nameSnapshot    String
   qty             Int    @default(1)
   unitPrice       Int // in paise
-  selectedOptions String @default("[]") // JSON: [{ "name": "Extra Cheese", "priceDelta": 3000 }]
-  itemNote        String?
+  selectedOptions String @db.Text // JSON: [{ "name": "Extra Cheese", "priceDelta": 3000 }]
+  itemNote        String? @db.Text
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
@@ -168,7 +168,7 @@ model Review {
   userId    String
   vendorId  String
   rating    Int // 1–5
-  text      String?
+  text      String?  @db.Text
   createdAt DateTime @default(now())
 
   order  Order  @relation(fields: [orderId], references: [id])
@@ -184,8 +184,8 @@ model FoodFeedback {
   foodQuality     Int // 1–5
   hygiene         Int // 1–5
   valueForMoney   Int // 1–5
-  itemComments    String?
-  comments        String?
+  itemComments    String? @db.Text
+  comments        String? @db.Text
   isFlaggedForMvrc Boolean @default(false)
   createdAt       DateTime @default(now())
 
@@ -202,9 +202,9 @@ model MVRCReport {
   rating           Float
   hygieneScore     Float
   foodQualityScore Float
-  complianceNotes  String?
-  correctiveActions String?
-  reportUrl        String? // PDF link
+  complianceNotes  String? @db.Text
+  correctiveActions String? @db.Text
+  reportUrl        String? @db.Text // PDF link
   assessmentDate   DateTime
   createdBy        String   @default("MVRC Admin")
 
