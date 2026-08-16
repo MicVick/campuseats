@@ -13,8 +13,10 @@ import { OtpInput } from "@/components/OtpInput";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/Toast";
 import { ApiError } from "@/hooks/api";
+import { isProductionEnv } from "@/lib/env";
 
 const IIMA_DOMAIN = "@iima.ac.in";
+const IS_PROD = isProductionEnv();
 
 function LoginInner() {
   const router = useRouter();
@@ -104,7 +106,7 @@ function LoginInner() {
   };
 
   // Demo Google sign-in: crafts an unsigned JWT the dev backend decodes.
-  // In production this is replaced by Google Identity Services credential.
+  // Dev/staging only — production uses real Google Identity Services below.
   const demoGoogle = async () => {
     const payload = {
       email: "demo.google@iima.ac.in",
@@ -124,6 +126,70 @@ function LoginInner() {
     }
   };
 
+  // Production SSO: real Google Identity Services sign-in.
+  const googleBtnRef = useRef<HTMLDivElement | null>(null);
+  const googleAuthRef = useRef(googleAuth);
+  useEffect(() => {
+    googleAuthRef.current = googleAuth;
+  }, [googleAuth]);
+
+  useEffect(() => {
+    if (!IS_PROD) return;
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      toast.error("Google sign-in is not configured.");
+      return;
+    }
+
+    const handleCredential = async (response: { credential: string }) => {
+      try {
+        const res = await googleAuthRef.current.mutateAsync(response.credential);
+        if (res.isNewUser) {
+          setName(res.user.name);
+          setStep("name");
+        } else {
+          router.replace(next);
+        }
+      } catch (e) {
+        toast.error(e instanceof ApiError ? e.message : "Google sign-in failed");
+      }
+    };
+
+    const initGsi = () => {
+      if (!window.google?.accounts?.id) return;
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleCredential,
+        hd: "iima.ac.in",
+      });
+      if (googleBtnRef.current) {
+        window.google.accounts.id.renderButton(googleBtnRef.current, {
+          theme: "outline",
+          size: "large",
+          width: 320,
+          text: "signin_with",
+        });
+      }
+    };
+
+    if (window.google?.accounts?.id) {
+      initGsi();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = initGsi;
+    document.head.appendChild(script);
+
+    return () => {
+      script.onload = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-surface px-6">
       {/* Brand */}
@@ -138,7 +204,16 @@ function LoginInner() {
           </p>
         </div>
 
-        {step === "email" && (
+        {step === "email" && IS_PROD && (
+          <div className="animate-fade-in space-y-4">
+            <div className="flex justify-center" ref={googleBtnRef} />
+            <p className="text-center text-xs text-ink-faint">
+              Sign in restricted to IIMA Google accounts ({IIMA_DOMAIN}).
+            </p>
+          </div>
+        )}
+
+        {step === "email" && !IS_PROD && (
           <div className="animate-fade-in space-y-4">
             <div>
               <label className="mb-1.5 block text-sm font-semibold text-ink">
@@ -191,7 +266,7 @@ function LoginInner() {
           </div>
         )}
 
-        {step === "otp" && (
+        {step === "otp" && !IS_PROD && (
           <div className="animate-fade-in space-y-5">
             <div className="text-center">
               <h2 className="text-lg font-bold text-ink">Enter the code</h2>

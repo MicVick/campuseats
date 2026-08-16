@@ -5,8 +5,13 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { requestOtpSchema } from '@/lib/validations';
 import { successResponse, withErrorHandler, errorResponse } from '@/lib/api-response';
+import { isProductionEnv } from '@/lib/env';
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
+  if (isProductionEnv()) {
+    return errorResponse('OTP login is disabled. Please sign in with your IIMA Google account.', 403);
+  }
+
   const body = await request.json();
   const { email } = requestOtpSchema.parse(body);
 

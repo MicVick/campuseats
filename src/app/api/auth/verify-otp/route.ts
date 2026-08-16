@@ -6,8 +6,13 @@ import { prisma } from '@/lib/db';
 import { verifyOtpSchema } from '@/lib/validations';
 import { generateStudentToken } from '@/lib/auth';
 import { successResponse, errorResponse, withErrorHandler } from '@/lib/api-response';
+import { isProductionEnv } from '@/lib/env';
 
 export const POST = withErrorHandler(async (request: NextRequest) => {
+  if (isProductionEnv()) {
+    return errorResponse('OTP login is disabled. Please sign in with your IIMA Google account.', 403);
+  }
+
   const body = await request.json();
   const { email, code } = verifyOtpSchema.parse(body);
 

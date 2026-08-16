@@ -6,6 +6,7 @@ import { prisma } from '@/lib/db';
 import { googleAuthSchema } from '@/lib/validations';
 import { generateStudentToken } from '@/lib/auth';
 import { successResponse, errorResponse, withErrorHandler } from '@/lib/api-response';
+import { isProductionEnv } from '@/lib/env';
 
 // Google token verification
 // In production, use google-auth-library's OAuth2Client.verifyIdToken()
@@ -30,8 +31,8 @@ async function verifyGoogleToken(idToken: string): Promise<{ email: string; name
       name: payload.name || payload.email.split('@')[0],
     };
   } catch {
-    // Fallback for dev/mock: decode JWT without verification
-    if (process.env.NODE_ENV === 'development') {
+    // Fallback for dev/mock: decode JWT without verification. Never allowed in production.
+    if (!isProductionEnv()) {
       try {
         const [, payloadB64] = idToken.split('.');
         const payload = JSON.parse(Buffer.from(payloadB64, 'base64').toString());

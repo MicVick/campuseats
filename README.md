@@ -174,9 +174,10 @@ CampusEats/
 | `DATABASE_URL` | SQLite file path (`file:./dev.db`) |
 | `JWT_SECRET` | Signs auth tokens |
 | `JWT_EXPIRES_IN` | Token lifetime (e.g. `7d`) |
-| `GOOGLE_CLIENT_ID` | Google OAuth client (mocked in dev) |
-| `MOCK_OTP_CODE` | Fixed dev OTP (`123456`) |
-| `NODE_ENV` | `development` enables mock auth fallbacks |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID, verified server-side (mocked in dev) |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | Same client ID, exposed to the browser for the Google Identity Services button |
+| `MOCK_OTP_CODE` | Fixed dev OTP (`123456`) — OTP login is disabled entirely when `NODE_ENV` is `production`/`prod` |
+| `NODE_ENV` | `development` enables mock auth fallbacks. `production`/`prod` restricts login to Google SSO for `@iima.ac.in` accounts only |
 
 ---
 
